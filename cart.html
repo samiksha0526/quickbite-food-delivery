@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - QuickBite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span class="logo-icon">🍔</span>
+                <span>QuickBite</span>
+            </div>
+            <div class="navbar-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="restaurants.html" class="nav-link">Restaurants</a>
+                <a href="cart.html" class="nav-link active">Cart</a>
+            </div>
+            <div class="navbar-cart">
+                <a href="cart.html" class="cart-icon">
+                    🛒
+                    <span class="cart-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Your Cart</h1>
+        <p>Review and checkout your order</p>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="cart-section">
+        <div class="cart-container">
+            <!-- Cart Items -->
+            <div class="cart-items-container">
+                <div id="cartItemsDisplay"></div>
+                <div id="emptyCartMessage" style="display: none;">
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p>Looks like you haven't added anything yet. Explore our restaurants!</p>
+                        <a href="restaurants.html" class="cta-btn primary-btn">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Delivery Fee</span>
+                    <span id="deliveryFee">₹40</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tax (10%)</span>
+                    <span id="tax">₹0</span>
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-total">
+                    <span>Grand Total</span>
+                    <span id="grandTotal">₹0</span>
+                </div>
+                <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">Place Order</button>
+                <a href="restaurants.html" class="continue-shopping-btn">Continue Shopping</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content confirmation-modal">
+            <div class="modal-header">
+                <h2>Order Confirmed! 🎉</h2>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">✓</div>
+                <p class="confirmation-message">Your order has been successfully placed!</p>
+                <div class="order-details-modal">
+                    <p><strong>Order ID:</strong> <span id="orderIdDisplay"></span></p>
+                    <p><strong>Estimated Delivery:</strong> <span id="estimatedDeliveryDisplay"></span></p>
+                    <p><strong>Total Amount:</strong> <span id="totalAmountDisplay"></span></p>
+                </div>
+                <p class="confirmation-note">You will receive a confirmation SMS and email shortly.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeConfirmationModal()">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>QuickBite</h4>
+                <p>Your favorite food, delivered fast.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html">Restaurants</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: hello@quickbite.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 QuickBite. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize cart page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCartPage();
+        });
+
+        function initializeCartPage() {
+            renderCart();
+            updateOrderSummary();
+            updateCartCount();
+        }
+
+        function renderCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsDisplay = document.getElementById('cartItemsDisplay');
+            const emptyCartMessage = document.getElementById('emptyCartMessage');
+
+            if (cart.length === 0) {
+                cartItemsDisplay.innerHTML = '';
+                emptyCartMessage.style.display = 'block';
+                document.getElementById('placeOrderBtn').disabled = true;
+                return;
+            }
+
+            emptyCartMessage.style.display = 'none';
+            cartItemsDisplay.innerHTML = '';
+
+            const cartHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <p class="cart-item-restaurant">${item.restaurantName}</p>
+                        <p class="cart-item-price">₹${item.price}</p>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="qty-btn" onclick="decreaseQuantity(${index})">−</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="qty-btn" onclick="increaseQuantity(${index})">+</button>
+                    </div>
+                    <div class="cart-item-total">
+                        <p class="total-price">₹${item.price * item.quantity}</p>
+                        <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+
+            cartItemsDisplay.innerHTML = cartHTML;
+        }
+
+        function increaseQuantity(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].quantity += 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateOrderSummary();
+            updateCartCount();
+        }
+
+        function decreaseQuantity(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+            } else {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateOrderSummary();
+            updateCartCount();
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateOrderSummary();
+            updateCartCount();
+        }
+
+        function updateOrderSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = subtotal > 0 ? 40 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const grandTotal = subtotal + deliveryFee + tax;
+
+            document.getElementById('subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('deliveryFee').textContent = `₹${deliveryFee}`;
+            document.getElementById('tax').textContent = `₹${tax}`;
+            document.getElementById('grandTotal').textContent = `₹${grandTotal}`;
+
+            // Enable/disable place order button
+            document.getElementById('placeOrderBtn').disabled = cart.length === 0;
+        }
+
+        function placeOrder() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) return;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = Math.round(subtotal * 0.1);
+            const grandTotal = subtotal + 40 + tax;
+            const orderId = 'ORD' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const estimatedDelivery = Math.floor(Math.random() * 30) + 20; // 20-50 mins
+
+            // Show confirmation modal
+            document.getElementById('orderIdDisplay').textContent = orderId;
+            document.getElementById('estimatedDeliveryDisplay').textContent = `${estimatedDelivery} minutes`;
+            document.getElementById('totalAmountDisplay').textContent = `₹${grandTotal}`;
+
+            document.getElementById('confirmationModal').style.display = 'flex';
+
+            // Clear cart
+            setTimeout(() => {
+                localStorage.setItem('cart', JSON.stringify([]));
+                renderCart();
+                updateOrderSummary();
+                updateCartCount();
+            }, 500);
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            window.location.href = 'index.html';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmationModal');
+            if (event.target === modal) {
+                closeConfirmationModal();
+            }
+        }
+    </script>
+</body>
+</html>
