@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - QuickBite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span class="logo-icon">🍔</span>
+                <span>QuickBite</span>
+            </div>
+            <div class="navbar-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="restaurants.html" class="nav-link">Restaurants</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+            </div>
+            <div class="navbar-cart">
+                <a href="cart.html" class="cart-icon">
+                    🛒
+                    <span class="cart-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Restaurant Header -->
+    <section class="restaurant-header" id="restaurantHeader">
+        <!-- Header content will be populated by JavaScript -->
+    </section>
+
+    <!-- Menu Categories Navigation -->
+    <div class="menu-nav">
+        <div class="menu-nav-container">
+            <button class="menu-nav-btn active" data-category="starters">Starters</button>
+            <button class="menu-nav-btn" data-category="main">Main Course</button>
+            <button class="menu-nav-btn" data-category="desserts">Desserts</button>
+            <button class="menu-nav-btn" data-category="beverages">Beverages</button>
+        </div>
+    </div>
+
+    <!-- Menu Items Container -->
+    <section class="menu-container">
+        <!-- Menu categories will be populated by JavaScript -->
+        <div id="menuContent"></div>
+    </section>
+
+    <!-- Floating Cart Indicator -->
+    <div class="floating-cart-indicator" id="floatingCartIndicator" style="display: none;">
+        <p id="cartItemsIndicator"></p>
+        <button class="view-cart-btn" onclick="window.location.href='cart.html'">View Cart</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>QuickBite</h4>
+                <p>Your favorite food, delivered fast.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html">Restaurants</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: hello@quickbite.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 QuickBite. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize menu page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMenuPage();
+        });
+
+        function initializeMenuPage() {
+            const restaurantId = getRestaurantIdFromURL();
+            const restaurant = restaurantData.find(r => r.id === restaurantId);
+
+            if (!restaurant) {
+                document.body.innerHTML = '<div style="padding: 50px; text-align: center;"><h1>Restaurant not found</h1><a href="restaurants.html">← Back to Restaurants</a></div>';
+                return;
+            }
+
+            // Render restaurant header
+            renderRestaurantHeader(restaurant);
+
+            // Render menu
+            renderMenu(restaurant);
+
+            // Setup category navigation
+            setupCategoryNavigation();
+
+            // Update cart count
+            updateCartCount();
+        }
+
+        function getRestaurantIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return parseInt(params.get('id')) || 1;
+        }
+
+        function renderRestaurantHeader(restaurant) {
+            const header = document.getElementById('restaurantHeader');
+            header.innerHTML = `
+                <div class="header-back-btn">
+                    <a href="restaurants.html">← Back to Restaurants</a>
+                </div>
+                <div class="restaurant-header-content">
+                    <img src="${restaurant.image}" alt="${restaurant.name}" class="header-image">
+                    <div class="header-info">
+                        <h1>${restaurant.name}</h1>
+                        <div class="header-meta">
+                            <span class="rating-large">⭐ ${restaurant.rating}</span>
+                            <span class="cuisine-large">${restaurant.cuisine}</span>
+                            <span class="delivery-large">⏱️ ${restaurant.deliveryTime} mins</span>
+                        </div>
+                        <p class="header-description">Quality cuisine with authentic flavors. Experience excellence with every bite.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMenu(restaurant) {
+            const menuContent = document.getElementById('menuContent');
+            menuContent.innerHTML = '';
+
+            const categories = ['starters', 'main', 'desserts', 'beverages'];
+            const categoryLabels = {
+                'starters': 'Starters',
+                'main': 'Main Course',
+                'desserts': 'Desserts',
+                'beverages': 'Beverages'
+            };
+
+            categories.forEach(category => {
+                const items = menuData.filter(item => item.restaurantId === restaurant.id && item.category === category);
+                
+                if (items.length > 0) {
+                    const categorySection = document.createElement('div');
+                    categorySection.className = 'menu-category';
+                    categorySection.id = `category-${category}`;
+
+                    let itemsHTML = `<h2 class="category-title">${categoryLabels[category]}</h2><div class="menu-items">`;
+                    
+                    items.forEach(item => {
+                        itemsHTML += `
+                            <div class="menu-item">
+                                <div class="item-image">
+                                    <img src="${item.image}" alt="${item.name}">
+                                </div>
+                                <div class="item-details">
+                                    <h3 class="item-name">${item.name}</h3>
+                                    <p class="item-description">${item.description}</p>
+                                    <div class="item-footer">
+                                        <span class="item-price">₹${item.price}</span>
+                                        <button class="add-to-cart-btn" onclick="addToCart(${item.id}, '${item.name}', ${item.price}, '${restaurant.name}')">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    itemsHTML += '</div>';
+                    categorySection.innerHTML = itemsHTML;
+                    menuContent.appendChild(categorySection);
+                }
+            });
+        }
+
+        function setupCategoryNavigation() {
+            const buttons = document.querySelectorAll('.menu-nav-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const category = this.getAttribute('data-category');
+                    const categorySection = document.getElementById(`category-${category}`);
+                    
+                    if (categorySection) {
+                        categorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        function addToCart(itemId, itemName, price, restaurantName) {
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Find if item already exists
+            const existingItem = cart.find(item => item.id === itemId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: itemId,
+                    name: itemName,
+                    price: price,
+                    restaurantName: restaurantName,
+                    quantity: 1
+                });
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show floating indicator
+            showFloatingCartIndicator();
+            
+            // Show success animation
+            showAddToCartAnimation(event.target);
+        }
+
+        function showAddToCartAnimation(button) {
+            const originalText = button.textContent;
+            button.textContent = '✓ Added!';
+            button.style.backgroundColor = '#10b981';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+            }, 1500);
+        }
+
+        function showFloatingCartIndicator() {
+            const floatingIndicator = document.getElementById('floatingCartIndicator');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            document.getElementById('cartItemsIndicator').textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''} in cart`;
+            floatingIndicator.style.display = 'flex';
+            
+            setTimeout(() => {
+                if (floatingIndicator) {
+                    floatingIndicator.style.display = 'none';
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
