@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Order Food Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span class="logo-icon">🍔</span>
+                <span>QuickBite</span>
+            </div>
+            <div class="navbar-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="restaurants.html" class="nav-link">Restaurants</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+            </div>
+            <div class="navbar-cart">
+                <a href="cart.html" class="cart-icon">
+                    🛒
+                    <span class="cart-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Discover the best food near you</h1>
+            <p class="hero-subtitle">Order from the finest restaurants in your area</p>
+            
+            <div class="search-bar-container">
+                <input 
+                    type="text" 
+                    class="search-location" 
+                    placeholder="📍 Enter your location..." 
+                    id="locationInput"
+                >
+                <input 
+                    type="text" 
+                    class="search-food" 
+                    placeholder="🔍 Search for food or restaurants..."
+                    id="foodSearchInput"
+                >
+                <button class="search-btn" onclick="navigateToRestaurants()">Search</button>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="restaurants.html" class="cta-btn primary-btn">Browse Restaurants</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://placehold.co/500x400/1a2a6c/ffffff?text=Delicious+Food" alt="Delicious food">
+        </div>
+    </section>
+
+    <!-- Popular Cuisines Section -->
+    <section class="popular-cuisines">
+        <h2 class="section-title">Popular Cuisines</h2>
+        <div class="cuisines-grid">
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍕</div>
+                <h3>Pizza</h3>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍔</div>
+                <h3>Burgers</h3>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍣</div>
+                <h3>Sushi</h3>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍰</div>
+                <h3>Desserts</h3>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🥗</div>
+                <h3>Salads</h3>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍜</div>
+                <h3>Noodles</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Restaurants Preview Section -->
+    <section class="top-restaurants">
+        <h2 class="section-title">Top Restaurants</h2>
+        <div class="restaurants-preview-grid">
+            <div class="restaurant-card-preview">
+                <div class="restaurant-image">
+                    <img src="https://placehold.co/300x200/1a2a6c/ffffff?text=La+Bella+Pasta" alt="La Bella Pasta">
+                    <span class="rating-badge">⭐ 4.8</span>
+                </div>
+                <div class="restaurant-info">
+                    <h3>La Bella Pasta</h3>
+                    <p class="cuisine-type">Italian</p>
+                    <div class="restaurant-meta">
+                        <span>⏱️ 30 mins</span>
+                        <span>💰 ₹₹</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="restaurant-card-preview">
+                <div class="restaurant-image">
+                    <img src="https://placehold.co/300x200/1a2a6c/ffffff?text=Spice+Kingdom" alt="Spice Kingdom">
+                    <span class="rating-badge">⭐ 4.6</span>
+                </div>
+                <div class="restaurant-info">
+                    <h3>Spice Kingdom</h3>
+                    <p class="cuisine-type">Indian</p>
+                    <div class="restaurant-meta">
+                        <span>⏱️ 25 mins</span>
+                        <span>💰 ₹</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="restaurant-card-preview">
+                <div class="restaurant-image">
+                    <img src="https://placehold.co/300x200/1a2a6c/ffffff?text=Burger+Haven" alt="Burger Haven">
+                    <span class="rating-badge">⭐ 4.5</span>
+                </div>
+                <div class="restaurant-info">
+                    <h3>Burger Haven</h3>
+                    <p class="cuisine-type">American</p>
+                    <div class="restaurant-meta">
+                        <span>⏱️ 20 mins</span>
+                        <span>💰 ₹₹</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="restaurant-card-preview">
+                <div class="restaurant-image">
+                    <img src="https://placehold.co/300x200/1a2a6c/ffffff?text=Sushi+Paradise" alt="Sushi Paradise">
+                    <span class="rating-badge">⭐ 4.9</span>
+                </div>
+                <div class="restaurant-info">
+                    <h3>Sushi Paradise</h3>
+                    <p class="cuisine-type">Japanese</p>
+                    <div class="restaurant-meta">
+                        <span>⏱️ 35 mins</span>
+                        <span>💰 ₹₹₹</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-all-container">
+            <a href="restaurants.html" class="view-all-btn">View All Restaurants →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>QuickBite</h4>
+                <p>Your favorite food, delivered fast.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html">Restaurants</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: hello@quickbite.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 QuickBite. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
